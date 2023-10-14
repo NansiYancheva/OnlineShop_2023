@@ -1,0 +1,72 @@
+﻿@page "/telerik_catalog_page"
+
+@using Telerik.DataSource;
+@using OnlineShop_WebApp.Services;
+@using OnlineShop_WebApp.Data;
+
+<TelerikGrid Class="grid"
+             Data=@ProductsList
+             ConfirmDelete="true"
+             Pageable="true"
+             Groupable="true"
+             Sortable="true"
+             FilterMode="GridFilterMode.FilterMenu"
+             Resizable="true"
+             Reorderable="true"
+             EditMode="GridEditMode.Popup"
+             SelectionMode="GridSelectionMode.Multiple"
+             PageSize="10"
+             Navigable="true">
+    <GridColumns>
+        <GridColumn Field="@nameof(Product.ProductName)" Title="Product Name" Width="195px" />
+        <GridColumn Field="@nameof(Product.UnitPrice)" Width="120px" Title="Cost" TextAlign="@ColumnTextAlign.Right">
+        </GridColumn>
+        <GridColumn Field="@nameof(Product.UnitInStock)" Title="In Stock" Width="170px">
+            <Template>
+                @{
+                    var product = context as Product;
+                    var value = product.UnitInStock.GetValueOrDefault();
+                }
+                <TelerikProgressBar Class="width-100" Max="125" Value="(double)value">
+                    <ProgressBarLabel Visible="true" Position="@ProgressBarLabelPosition.Center">
+                        <Template Context="progressBarContext">
+                            @if (value > 125)
+                            {
+                                <span style="font-weight:bold">Over 125 in stock</span>
+                            }
+                            else
+                            {
+                                <span>In stock:<span style="font-weight:bold">@(progressBarContext.Value)</span></span>
+                            }
+                        </Template>
+                    </ProgressBarLabel>
+                </TelerikProgressBar>
+            </Template>
+        </GridColumn>
+    </GridColumns>
+</TelerikGrid>
+
+@code {
+    public List<Product> ProductsList { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ProductsList = ProductService.GetProducts().ToList();
+    }
+
+    public List<int?> GetFilterValues(CompositeFilterDescriptor filterDescriptor)
+    {
+        return filterDescriptor.FilterDescriptors.Select(f => (int?)(f as FilterDescriptor).Value).ToList();
+    }
+
+}
+
+
+<style>
+    .width-100 {
+        width: 100%;
+    }
+    .grid .k-grid-content tr {
+        line-height: 32px;
+    }
+</style>

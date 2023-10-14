@@ -1,0 +1,23 @@
+﻿@layout TelerikLayout
+@inherits LayoutComponentBase
+
+<PageTitle>OnlineShop_WebApp</PageTitle>
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <article class="content px-4">
+            <ErrorBoundary>
+                <ChildContent>
+            @Body
+                </ChildContent>
+                <ErrorContent>
+                    <p class="my-custom-class">Whoa, sorry about that! We will do our best to fix this problem! Please refresh! </p>
+                </ErrorContent>
+            </ErrorBoundary>
+        </article>
+    </main>
+</div>

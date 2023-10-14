@@ -1,0 +1,131 @@
+﻿@page "/product-catalog"
+
+@using OnlineShop_WebApp.Data;
+@using OnlineShop_WebApp.Services;
+@using System.Linq;
+@using Telerik.DataSource
+@using Telerik.DataSource.Extensions
+@using Telerik.Blazor.Components.DropDownList
+
+
+<div class="page-wrapper">
+    <h1>Product Catalog</h1>
+
+    <div class="filter-dropdown">
+        <select @onchange="FilterProducts">
+            <option value="all">All Products</option>
+            <option value="in-stock">In Stock</option>
+            <option value="out-of-stock">Out of Stock</option>
+        </select>
+    </div>
+
+    <div class="product-wrapper">
+        @{
+            var filteredProducts = GetFilteredProducts();
+
+            foreach (var product in filteredProducts)
+            {
+                <section class="product-card-wrapper">
+                    <h3 title="@product.ProductName">@product.ProductName</h3>
+                    <div class="product-image" style="background-image: url('@product.ProductImage');">
+                    </div>
+                    <span class="product-price">
+                        <span class="money-icon">💲</span> @product.UnitPrice
+                    </span>
+                    <span class="product-units">
+                        <span class="stock-icon">📦</span> @product.UnitInStock
+                    </span>
+
+                </section>
+            }
+        }
+    </div>
+</div>
+
+
+@code {
+
+    private List<Product> ProductsList;
+
+    protected override void OnInitialized()
+    {
+        ProductsList = ProductService.GetProducts();
+    }
+
+    private string filterValue = "all";
+
+    private void FilterProducts(ChangeEventArgs e)
+    {
+        filterValue = e.Value.ToString().ToLower();
+    }
+
+    private List<Product> GetFilteredProducts()
+    {
+        switch (filterValue)
+        {
+            case "in-stock":
+                return ProductsList.Where(product => product.UnitInStock > 0).ToList();
+            case "out-of-stock":
+                return ProductsList.Where(product => product.UnitInStock == 0).ToList();
+            case "all":
+            default:
+                return ProductsList;
+        }
+    }
+
+    
+}
+
+<style>
+
+    .product-price, .product-units, .product-image {
+        align-self: center;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .product-price, .product-units {
+        font-size: 20px;
+    }
+
+    .product-image {
+        width: 95%;
+        height: 200px;
+        background-size: auto;
+    }
+
+    .product-wrapper {
+        display: flex;
+    }
+
+        .product-wrapper .product-card-wrapper:first-child {
+            margin-left: 0;
+        }
+
+        .product-wrapper .product-card-wrapper:last-child {
+            margin-right: 0;
+        }
+
+    .product-card-wrapper {
+        width: 300px;
+        border-color: rgba(0,0,0,0.08);
+        border-radius: 4px;
+        border-width: 1px;
+        border-style: solid;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        margin: 10px
+    }
+
+        .product-card-wrapper h3 {
+            margin-top: 5px;
+            align-self: center;
+            font-size: 18px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 90%;
+            text-align: center;
+        }
+</style>

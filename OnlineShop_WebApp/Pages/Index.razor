@@ -1,0 +1,29 @@
+﻿@page "/"
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Your online product catalog!</h1>
+
+<h5>Welcome!</h5>
+
+<p> Please feel free to explore both catalogs: </p>
+<p>1.The one utilizing only Blazor functionalities available here: <TelerikButton OnClick="NavigateToBlazorCatalog">Blazor Catalog</TelerikButton></p>
+<p>and</p> 
+<p>2.The other primarily featuring Telerik components avaible here: <TelerikButton OnClick="NavigateToTelerikCatalog">Telerik Catalog</TelerikButton> </p>
+
+<p>Send us your feedback to the email address yourVoteMatter@feedback.com to let us know which one you find better.</p>
+<p>Thank you!</p>
+
+@code {
+    private void NavigateToBlazorCatalog()
+    {
+        NavigationManager.NavigateTo("/product-catalog");
+    }
+
+    private void NavigateToTelerikCatalog()
+    {
+        NavigationManager.NavigateTo("/telerik_catalog_page");
+    }
+}
